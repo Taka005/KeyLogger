@@ -9,7 +9,7 @@
 
 #define BUFFER_SIZE 1024
 
-void* request(char *method,char *hostname,char *port,char *path,char *type,char *data){
+void* request(char *method,char *hostname,int port,char *path,char *type,char *data){
   int sockfd;
   int bytes;
   struct sockaddr_in serv_addr;
@@ -38,7 +38,7 @@ void* request(char *method,char *hostname,char *port,char *path,char *type,char 
     return NULL;
   }
 
-  sprintf(buffer,"%s %s HTTP/1.1\r\nHost: %s:%s\r\n",method,path,hostname);
+  sprintf(buffer,"%s %s HTTP/1.1\r\nHost: %s:%d\r\n",method,path,hostname);
 
   if(type != NULL&&data != NULL){
     sprintf(buffer + strlen(buffer),"Content-Type: %s\r\nContent-Length: %zu\r\n\r\n%s",type,strlen(data),data);
@@ -64,9 +64,9 @@ void* request(char *method,char *hostname,char *port,char *path,char *type,char 
   return strdup(buffer);
 }
 
-char* http_get(char *hostname,char *port,char *path){
+char* http_get(char *hostname,int port,char *path){
   if(port == NULL){
-    port = "80";
+    port = 80;
   }
 
   return request(
@@ -79,9 +79,9 @@ char* http_get(char *hostname,char *port,char *path){
   );
 }
 
-char* http_post(char *hostname,char *port,char *path,char *type,char *data){
+char* http_post(char *hostname,int port,char *path,char *type,char *data){
   if(port == NULL){
-    port = "80";
+    port = 80;
   }
 
   return request(
