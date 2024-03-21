@@ -2,7 +2,7 @@
 #include "http.h"
 
 int main(){
-  char *data = http_get("google.com",NULL,"/");
+  char* data = sendRequest("GET","google.com","80","/",NULL,NULL);
 
   if(data == NULL){
     return 1;

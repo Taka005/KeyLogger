@@ -9,13 +9,13 @@
 
 #define BUFFER_SIZE 1024
 
-void* request(char *method,char *hostname,char *port,char *path,char *type,char *data){
+char* sendRequest(char *method,char *hostname,char *port,char *path,char *type,char *data){
   int sock;
   int bytes;
   struct sockaddr_in serv_addr;
   struct hostent *server;
-  char buffer[BUFFER_SIZE];
-  char response[];
+  char request[BUFFER_SIZE];
+  char response[BUFFER_SIZE];
 
   sock = socket(AF_INET,SOCK_STREAM,0);
   if(sock < 0){
@@ -42,34 +42,21 @@ void* request(char *method,char *hostname,char *port,char *path,char *type,char 
     return NULL;
   }
 
-  sprintf(buffer,"%s HTTP/1.1\r\nHost: %s:%s\r\n",method,path,hostname);
+  sprintf(request,"%s %s HTTP/1.1\r\nHost: %s:%s\r\n",method,path,hostname,port);
 
   if(type != NULL&&data != NULL){
-    sprintf(buffer + strlen(buffer),"Content-Type: %s\r\nContent-Length: %zu\r\n\r\n%s",type,strlen(data),data);
+    sprintf(request + strlen(request),"Content-Type: %s\r\nContent-Length: %zu\r\n\r\n%s",type,strlen(data),data);
   }
 
-  bytes = write(sock,buffer,strlen(buffer));
+  bytes = write(sock,request,strlen(request));
   if(bytes < 0){
     printf("ERROR: Can't writing to socket\n");
     close(sock);
     return NULL;
   }
 
-  while(1){
-    int read_size = read(sock,response,BUFFER_SIZE);
-    printf("%d",read_size)
-    if(read_size > 0){
-      write(1,response,read_size);
-    }else{
-      break;
-    }
-  }
-
-  close(sock);
-  return strdup(response);
-
-  memset(buffer,0,sizeof(buffer));
-  bytes = read(sock,buffer,sizeof(buffer) - 1);
+  memset(request,0,sizeof(request));
+  bytes = read(sock,request,sizeof(request) - 1);
   if(bytes < 0){
     printf("ERROR: Can't reading from socket\n");
     return NULL;
@@ -79,35 +66,5 @@ void* request(char *method,char *hostname,char *port,char *path,char *type,char 
 
   close(sock);
 
-  return strdup(buffer);
-}
-
-char* http_get(char *hostname,char *port,char *path){
-  if(port == NULL){
-    port = "80";
-  }
-
-  return request(
-    "GET",
-    hostname,
-    port,
-    path,
-    NULL,
-    NULL
-  );
-}
-
-char* http_post(char *hostname,char *port,char *path,char *type,char *data){
-  if(port == NULL){
-    port = "80";
-  }
-
-  return request(
-    "POST",
-    hostname,
-    port,
-    path,
-    type,
-    data
-  );
+  return strdup(request);
 }
