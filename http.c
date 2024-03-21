@@ -5,6 +5,7 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <netdb.h>
+#include "http.h"
 
 #define BUFFER_SIZE 1024
 
