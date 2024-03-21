@@ -19,13 +19,13 @@ char request(char *method,char *hostname,char *port,char *path,char *type,char *
   sockfd = socket(AF_INET,SOCK_STREAM,0);
   if(sockfd < 0){
     printf("ERROR: Can't opening socket\n");
-    return NULL;
+    return "ERROR";
   }
 
   server = gethostbyname(hostname);
   if(server == NULL){
     printf("ERROR: No such host\n");
-    return NULL;
+    return "ERROR";
   }
 
   memset(&serv_addr,0,sizeof(serv_addr));
@@ -35,7 +35,7 @@ char request(char *method,char *hostname,char *port,char *path,char *type,char *
 
   if(connect(sockfd,(struct sockaddr *)&serv_addr,sizeof(serv_addr)) < 0){
     printf("ERROR: Can't connecting\n");
-    return NULL;
+    return "ERROR";
   }
 
   sprintf(buffer,"%s %s HTTP/1.1\r\nHost: %s:%s\r\n",method,path,hostname);
@@ -47,14 +47,14 @@ char request(char *method,char *hostname,char *port,char *path,char *type,char *
   bytes = write(sockfd, buffer, strlen(buffer));
   if(bytes < 0){
     printf("ERROR: Can't writing to socket\n");
-    return NULL;
+    return "ERROR";
   }
 
   memset(buffer,0,sizeof(buffer));
   bytes = read(sockfd,buffer,sizeof(buffer) - 1);
   if(bytes < 0){
     printf("ERROR: Can't reading from socket\n");
-    return NULL;
+    return "ERROR";
   }
 
   printf("Connecting OK");
