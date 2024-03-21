@@ -3,12 +3,12 @@
 
 int main(){
   char *data = http_get("google.com",NULL,"/");
-  
+
   if(data == NULL){
     return 1;
   }
 
-  printf(data);
+  printf("%s",data);
 
   return 0;
 }
