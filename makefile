@@ -7,10 +7,10 @@ TARGET = logger
 all: $(TARGET)
 
 $(TARGET): $(OBJS)
-    $(CC) $(CFLAGS) -o $@ $(OBJS)
+  $(CC) $(CFLAGS) -o $@ $(OBJS)
 
 %.o: %.c
-    $(CC) $(CFLAGS) -c $< -o $@
+  $(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-    rm -f $(OBJS) $(TARGET)
+  rm -f $(OBJS) $(TARGET)
