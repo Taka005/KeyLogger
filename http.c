@@ -15,6 +15,7 @@ void* request(char *method,char *hostname,char *port,char *path,char *type,char 
   struct sockaddr_in serv_addr;
   struct hostent *server;
   char buffer[BUFFER_SIZE];
+  int read_size;
 
   sockfd = socket(AF_INET,SOCK_STREAM,0);
   if(sockfd < 0){
