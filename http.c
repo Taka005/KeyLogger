@@ -10,22 +10,24 @@
 #define BUFFER_SIZE 1024
 
 void* request(char *method,char *hostname,char *port,char *path,char *type,char *data){
-  int sockfd;
+  int sock;
   int bytes;
   struct sockaddr_in serv_addr;
   struct hostent *server;
   char buffer[BUFFER_SIZE];
-  char *response;
+  char response[];
 
-  sockfd = socket(AF_INET,SOCK_STREAM,0);
-  if(sockfd < 0){
+  sock = socket(AF_INET,SOCK_STREAM,0);
+  if(sock < 0){
     printf("ERROR: Can't opening socket\n");
+    close(sock);
     return NULL;
   }
 
   server = gethostbyname(hostname);
   if(server == NULL){
     printf("ERROR: No such host\n");
+    close(sock);
     return NULL;
   }
 
@@ -34,8 +36,9 @@ void* request(char *method,char *hostname,char *port,char *path,char *type,char 
   memcpy((char *)&serv_addr.sin_addr.s_addr,(char *)server->h_addr,server->h_length);
   serv_addr.sin_port = htons(atoi(port));
 
-  if(connect(sockfd,(struct sockaddr *)&serv_addr,sizeof(serv_addr)) < 0){
+  if(connect(sock,(struct sockaddr *)&serv_addr,sizeof(serv_addr)) < 0){
     printf("ERROR: Can't connecting\n");
+    close(sock);
     return NULL;
   }
 
@@ -45,15 +48,16 @@ void* request(char *method,char *hostname,char *port,char *path,char *type,char 
     sprintf(buffer + strlen(buffer),"Content-Type: %s\r\nContent-Length: %zu\r\n\r\n%s",type,strlen(data),data);
   }
 
-  bytes = write(sockfd,buffer,strlen(buffer));
+  bytes = write(sock,buffer,strlen(buffer));
   if(bytes < 0){
     printf("ERROR: Can't writing to socket\n");
+    close(sock);
     return NULL;
   }
 
   while(1){
-    int read_size = read(sockfd,response,BUFFER_SIZE);
-
+    int read_size = read(sock,response,BUFFER_SIZE);
+    printf("%d",read_size)
     if(read_size > 0){
       write(1,response,read_size);
     }else{
@@ -61,11 +65,11 @@ void* request(char *method,char *hostname,char *port,char *path,char *type,char 
     }
   }
 
-  close(sockfd);
+  close(sock);
   return strdup(response);
 
   memset(buffer,0,sizeof(buffer));
-  bytes = read(sockfd,buffer,sizeof(buffer) - 1);
+  bytes = read(sock,buffer,sizeof(buffer) - 1);
   if(bytes < 0){
     printf("ERROR: Can't reading from socket\n");
     return NULL;
@@ -73,7 +77,7 @@ void* request(char *method,char *hostname,char *port,char *path,char *type,char 
 
   printf("Connecting OK\n");
 
-  close(sockfd);
+  close(sock);
 
   return strdup(buffer);
 }
