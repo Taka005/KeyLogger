@@ -44,11 +44,11 @@ void* request(char *method,char *hostname,char *port,char *path,char *type,char 
     sprintf(buffer + strlen(buffer),"Content-Type: %s\r\nContent-Length: %zu\r\n\r\n%s",type,strlen(data),data);
   }
 
-  while(1){
-    int read_size;
-    read_size = read(sockfd,buffer,BUFFER_SIZE);
+  while (1){
+    memset(buffer,0,sizeof(buffer));
+    read_size = recv(sockfd, buffer, BUFFER_SIZE, 0);
     if(read_size > 0){
-      write(1,buffer,read_size);
+      printf("%s",  buffer);
     }else{
       break;
     }
@@ -63,11 +63,6 @@ void* request(char *method,char *hostname,char *port,char *path,char *type,char 
   }
 
   memset(buffer,0,sizeof(buffer));
-  int total_bytes = 0;
-  while ((bytes = read(sockfd, buffer + total_bytes, sizeof(buffer) - 1 - total_bytes)) > 0) {
-    total_bytes += bytes;
-  }
-
   bytes = read(sockfd,buffer,sizeof(buffer) - 1);
   if(bytes < 0){
     printf("ERROR: Can't reading from socket\n");
