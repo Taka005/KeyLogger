@@ -1,6 +1,14 @@
 #include <stdio.h>
 #include "http.h"
 
-char *data = http_get("google.com",NULL,"/");
+int main(){
+  char *data = http_get("google.com",NULL,"/");
+  
+  if(data == NULL){
+    return 1;
+  }
 
-printf(data);
+  printf(data);
+
+  return 0;
+}
