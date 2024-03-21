@@ -44,6 +44,18 @@ void* request(char *method,char *hostname,char *port,char *path,char *type,char 
     sprintf(buffer + strlen(buffer),"Content-Type: %s\r\nContent-Length: %zu\r\n\r\n%s",type,strlen(data),data);
   }
 
+  while(1){
+    int read_size;
+    read_size = read(sockfd,buffer,BUFFER_SIZE);
+    if(read_size > 0){
+      write(1,buffer,read_size);
+    }else{
+      break;
+    }
+  }
+
+  return strdup(buffer)
+
   bytes = write(sockfd, buffer, strlen(buffer));
   if(bytes < 0){
     printf("ERROR: Can't writing to socket\n");
