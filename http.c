@@ -51,13 +51,17 @@ void* request(char *method,char *hostname,char *port,char *path,char *type,char 
   }
 
   memset(buffer,0,sizeof(buffer));
+  while((bytes = read(sockfd,buffer,sizeof(buffer) - 1)) > 0){
+    memset(buffer,0,sizeof(buffer));
+  }
+
   bytes = read(sockfd,buffer,sizeof(buffer) - 1);
   if(bytes < 0){
     printf("ERROR: Can't reading from socket\n");
     return NULL;
   }
 
-  printf("Connecting OK");
+  printf("Connecting OK\n");
 
   close(sockfd);
 
