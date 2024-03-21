@@ -62,7 +62,7 @@ void* request(char *method,char *hostname,char *port,char *path,char *type,char 
   }
 
   close(sockfd);
-  return strdup(buffer);
+  return strdup(response);
 
   memset(buffer,0,sizeof(buffer));
   bytes = read(sockfd,buffer,sizeof(buffer) - 1);
