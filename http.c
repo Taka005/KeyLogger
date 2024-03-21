@@ -54,7 +54,7 @@ void* request(char *method,char *hostname,char *port,char *path,char *type,char 
       break;
     }
   }
-
+  close(sockfd)
   return strdup(buffer);
 
   bytes = write(sockfd, buffer, strlen(buffer));
