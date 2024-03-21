@@ -51,8 +51,9 @@ void* request(char *method,char *hostname,char *port,char *path,char *type,char 
   }
 
   memset(buffer,0,sizeof(buffer));
-  while((bytes = read(sockfd,buffer,sizeof(buffer) - 1)) > 0){
-    memset(buffer,0,sizeof(buffer));
+  int total_bytes = 0;
+  while ((bytes = read(sockfd, buffer + total_bytes, sizeof(buffer) - 1 - total_bytes)) > 0) {
+    total_bytes += bytes;
   }
 
   bytes = read(sockfd,buffer,sizeof(buffer) - 1);
