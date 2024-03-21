@@ -56,7 +56,7 @@ char* sendRequest(char *method,char *hostname,char *port,char *path,char *type,c
   while(1){
     int readSize = read(sock,response,BUFFER_SIZE);
 
-    if(read_size > 0){
+    if(readSize > 0){
       write(1,response,readSize);
     }else{
       break;
