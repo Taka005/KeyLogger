@@ -63,7 +63,7 @@ char* sendRequest(char *method,char *hostname,char *port,char *path,char *type,c
     }
   }
 
-  return strdup(response)
+  return strdup(response);
 
   bytes = write(sock,request,strlen(request));
   if(bytes < 0){
