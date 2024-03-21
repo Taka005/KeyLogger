@@ -38,7 +38,7 @@ void* request(char *method,char *hostname,char *port,char *path,char *type,char 
     return NULL;
   }
 
-  sprintf(buffer,"%s %s HTTP/1.1\r\nHost: %s:%s\r\n",method,path,hostname);
+  sprintf(buffer,"%s HTTP/1.1\r\nHost: %s:%s\r\n",method,path,hostname);
 
   if(type != NULL&&data != NULL){
     sprintf(buffer + strlen(buffer),"Content-Type: %s\r\nContent-Length: %zu\r\n\r\n%s",type,strlen(data),data);
