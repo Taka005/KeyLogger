@@ -15,7 +15,7 @@ void* request(char *method,char *hostname,char *port,char *path,char *type,char 
   struct sockaddr_in serv_addr;
   struct hostent *server;
   char buffer[BUFFER_SIZE];
-  int read_size;
+  char *response;
 
   sockfd = socket(AF_INET,SOCK_STREAM,0);
   if(sockfd < 0){
@@ -52,17 +52,17 @@ void* request(char *method,char *hostname,char *port,char *path,char *type,char 
   }
 
   while(1){
-    char buf[BUFFER_SIZE];
-    int read_size = read(s, buf, BUFFER_SIZE);
+    int read_size = read(sockfd,response,BUFFER_SIZE);
 
     if(read_size > 0){
-      write(1,buf,read_size);
+      write(1,response,read_size);
     }else{
       break;
     }
   }
 
-  return strdup(buf);
+  close(sockfd);
+  return strdup(buffer);
 
   memset(buffer,0,sizeof(buffer));
   bytes = read(sockfd,buffer,sizeof(buffer) - 1);
