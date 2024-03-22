@@ -62,25 +62,7 @@ char* request(char *method,char *hostname,char *port,char *path,char *type,char 
     }
   }
 
-  return strdup(res);
-
-  bytes = write(sock,req,strlen(req));
-  if(bytes < 0){
-    printf("ERROR: Can't writing to socket\n");
-    close(sock);
-    return NULL;
-  }
-
-  memset(req,0,sizeof(req));
-  bytes = read(sock,req,sizeof(req) - 1);
-  if(bytes < 0){
-    printf("ERROR: Can't reading from socket\n");
-    return NULL;
-  }
-
-  printf("Connecting OK\n");
-
   close(sock);
 
-  return strdup(req);
+  return strdup(res);
 }
