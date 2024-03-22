@@ -42,16 +42,15 @@ char* sendRequest(char *method,char *hostname,char *port,char *path,char *type,c
     return NULL;
   }
 
-  sprintf(request,"%s %s HTTP/1.1\r\n",method,path);
-  write(sock,request,strlen(request));
-
-  sprintf(request,"Host: %s:%s\r\n",hostname,port);
-  write(sock,request,strlen(request));
+  sprintf(request,"%s %s HTTP/1.1\r\nHost: %s:%s\r\n",method,path,hostname,port);
 
   if(type != NULL&&data != NULL){
-    sprintf(request,"Content-Type: %s\r\nContent-Length: %zu\r\n\r\n%s",type,strlen(data),data);
-    write(sock,request,strlen(request));
+    sprintf(request + strlen(request),"Content-Type: %s\r\nContent-Length: %zu\r\n\r\n%s",type,strlen(data),data);
+  }else{
+    sprintf(request + strlen(request),"\r\n");
   }
+
+  write(sock,request,strlen(request));
 
   while(1){
     int readSize = read(sock,response,BUFFER_SIZE);
