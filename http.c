@@ -9,13 +9,13 @@
 
 #define BUFFER_SIZE 1024
 
-char* sendRequest(char *method,char *hostname,char *port,char *path,char *type,char *data){
+char* request(char *method,char *hostname,char *port,char *path,char *type,char *data){
   int sock;
   int bytes;
   struct sockaddr_in serv_addr;
   struct hostent *server;
-  char request[BUFFER_SIZE];
-  char response[BUFFER_SIZE];
+  char req[BUFFER_SIZE];
+  char res[BUFFER_SIZE];
 
   sock = socket(AF_INET,SOCK_STREAM,0);
   if(sock < 0){
@@ -42,38 +42,37 @@ char* sendRequest(char *method,char *hostname,char *port,char *path,char *type,c
     return NULL;
   }
 
-  sprintf(request,"%s %s HTTP/1.1\r\nHost: %s:%s\r\n",method,path,hostname,port);
+  sprintf(req,"%s %s HTTP/1.1\r\nHost: %s:%s\r\n",method,path,hostname,port);
 
   if(type != NULL&&data != NULL){
-    sprintf(request + strlen(request),"Content-Type: %s\r\nContent-Length: %zu\r\n\r\n%s",type,strlen(data),data);
+    sprintf(req + strlen(req),"Content-Type: %s\r\nContent-Length: %zu\r\n\r\n%s",type,strlen(data),data);
   }else{
-    sprintf(request + strlen(request),"\r\n");
+    sprintf(req + strlen(req),"\r\n");
   }
 
-  write(sock,request,strlen(request));
+  write(sock,req,strlen(req));
 
   while(1){
-    int readByte = read(sock,response,BUFFER_SIZE);
+    int readByte = read(sock,res,BUFFER_SIZE);
 
     if(readByte > 0){
-      sprintf(response + strlen(response),readByte);
-      //write(1,response,readByte);
+      write(1,res,readByte);
     }else{
       break;
     }
   }
 
-  return strdup(response);
+  return strdup(res);
 
-  bytes = write(sock,request,strlen(request));
+  bytes = write(sock,req,strlen(req));
   if(bytes < 0){
     printf("ERROR: Can't writing to socket\n");
     close(sock);
     return NULL;
   }
 
-  memset(request,0,sizeof(request));
-  bytes = read(sock,request,sizeof(request) - 1);
+  memset(req,0,sizeof(req));
+  bytes = read(sock,req,sizeof(req) - 1);
   if(bytes < 0){
     printf("ERROR: Can't reading from socket\n");
     return NULL;
@@ -83,5 +82,5 @@ char* sendRequest(char *method,char *hostname,char *port,char *path,char *type,c
 
   close(sock);
 
-  return strdup(request);
+  return strdup(req);
 }
