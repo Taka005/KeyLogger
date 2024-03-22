@@ -53,10 +53,11 @@ char* sendRequest(char *method,char *hostname,char *port,char *path,char *type,c
   write(sock,request,strlen(request));
 
   while(1){
-    int readSize = read(sock,response,BUFFER_SIZE);
+    int readByte = read(sock,response,BUFFER_SIZE);
 
-    if(readSize > 0){
-      write(1,response,readSize);
+    if(readByte > 0){
+      sprintf(response + strlen(response),readByte);
+      //write(1,response,readByte);
     }else{
       break;
     }
